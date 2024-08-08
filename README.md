@@ -1,4 +1,4 @@
-THis project cantains all the necessary dockercompose files for setting up the folowing:
+THis project contains all the necessary dockercompose files for setting up the folowing:
 
 1.**Wekan-** Open source personal Jira board to track thing like personal projects wedding planning.<br />
 2.**PiHole-** Network wide add blocking with DNS proxy.<br />
