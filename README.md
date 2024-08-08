@@ -6,7 +6,7 @@ THis project cantains all the necessary dockercompose files for setting up the f
 4.**Plex-** Self hosted Media streaming server.<br />
 5.**Veloran-** Server for a completely open source video game.<br />
 6.**Minecraft-** Multiple minecraft servers:<br />
-	**Vanilla-** Standard vanilla.<br />
- 	**VanillaTweaks-** Slighly modded with a focus on staying true to vanilla.<br />
-  	**BetterMinecraft** Heavily modded<br />
+&emsp;**Vanilla-** Standard vanilla.<br />
+&emsp;**VanillaTweaks-** Slighly modded with a focus on staying true to vanilla.<br />
+&emsp;**BetterMinecraft** Heavily modded<br />
 		
