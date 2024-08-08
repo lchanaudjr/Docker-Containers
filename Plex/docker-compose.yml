@@ -1,0 +1,14 @@
+version: '3'
+services:
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    restart: unless-stopped
+    environment:
+      - TZ=/etc/localtime:/etc/localtime:ro
+      - PLEX_CLAIM=REDACTED
+    network_mode: host
+    volumes:
+      - <path/to/plex/database>:/config
+      - <path/to/transcode/temp>:/transcode
+      - <path/to/media>:/data

@@ -1,0 +1,115 @@
+version: '2'
+
+
+services:
+
+  # nginx-proxy:
+  #   image: nginxproxy/nginx-proxy
+  #   ports:
+  #     - '80:80'
+  #   environment:
+  #     DEFAULT_HOST: REDACTED
+  #   volumes:
+  #     - '/var/run/docker.sock:/tmp/docker.sock'
+  #   restart: always
+
+  # pihole:
+  #   image: pihole/pihole:latest
+  #   ports:
+  #     - '53:53/tcp'
+  #     - '53:53/udp'
+  #     - "67:67/udp"
+  #     - '8053:80/tcp'
+  #   volumes:
+  #     - './etc-pihole:/etc/pihole'
+  #     - './etc-dnsmasq.d:/etc/dnsmasq.d'
+  #     # run `touch ./var-log/pihole.log` first unless you like errors
+  #     # - './var-log/pihole.log:/var/log/pihole/pihole.log'
+  #   # Recommended but not required (DHCP needs NET_ADMIN)
+  #   #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+  #   cap_add:
+  #     - NET_ADMIN
+  #   environment:
+  #     TZ: 'America/Chicago'
+  #     WEBPASSWORD: ''
+  #     FTLCONF_LOCAL_IPV4: 192.168.1.248
+  #     PROXY_LOCATION: pihole
+  #     VIRTUAL_HOST: REDACTED
+  #     VIRTUAL_PORT: 80
+  #   extra_hosts:
+  #     # Resolve to nothing domains (terminate connection)
+  #     - 'nw2master.bioware.com nwn2.master.gamespy.com:0.0.0.0'
+  #     # LAN hostnames for other docker containers using nginx-proxy
+  #     - 'REDACTED
+  #   restart: always
+
+  wekandb:
+    image: mongo:6
+    container_name: wekan-db
+    restart: always
+    command: mongod --logpath /dev/null --oplogSize 128 --quiet
+    networks:
+      - wekan-tier
+    expose:
+      - REDACTED
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - wekan-db:/data/db
+      - wekan-db-dump:/dump
+
+  wekan:
+    image: ghcr.io/wekan/wekan:latest
+    container_name: wekan-app
+    restart: always
+    networks:
+      - wekan-tier
+    environment:
+      - ROOT_URL= http://todo.larryandzoe.com
+      - WRITABLE_PATH=/data
+      - MONGO_URL=mongodb://wekandb:27017/wekan
+      - MAIL_URL=REDACTED
+      - MAIL_FROM=Chanaud Notifications <REDACTED>
+      - WITH_API=true
+      - RICHER_CARD_COMMENT_EDITOR=false
+      - CARD_OPENED_WEBHOOK_ENABLED=false
+      - BIGEVENTS_PATTERN=NONE
+      - NOTIFY_DUE_DAYS_BEFORE_AND_AFTER=13,6,5,4,3,2,1,0
+      - NOTIFY_DUE_AT_HOUR_OF_DAY=10
+      - BROWSER_POLICY_ENABLED=true
+    depends_on:
+      - wekandb
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - wekan-files:/data:rw
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    networks:
+      - wekan-tier
+    depends_on:
+      - wekan
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  # Alternative volume config:
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - ./nginx/ssl/ssl.conf:/etc/nginx/conf.d/ssl/ssl.conf:ro
+  #     - ./nginx/ssl/testvm-ehu.crt:/etc/nginx/conf.d/ssl/certs/mycert.crt:ro
+  #     - ./nginx/ssl/testvm-ehu.key:/etc/nginx/conf.d/ssl/certs/mykey.key:ro
+  #     - ./nginx/ssl/pphrase:/etc/nginx/conf.d/ssl/pphrase:ro
+
+volumes:
+  wekan-files:
+    driver: local
+  wekan-db:
+    driver: local
+  wekan-db-dump:
+    driver: local
+
+networks:
+  wekan-tier:
+    driver: bridge
+

@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  mc:
+    image: itzg/minecraft-server:latest
+    environment:
+      #SETUP_ONLY: true
+      TYPE: AUTO_CURSEFORGE
+      CF_API_KEY: REDACTED
+      CF_SLUG: better-mc-forge-bmc4
+      CF_FORCE_SYNCHRONIZE: false
+      CF_EXCLUDE_MODS: |
+        better-advancements
+        better-mods-button
+        chat-heads
+        configured-defaults
+        controllable
+        drippy-loading-screen
+        entity-model-features
+        entity-texture-features-fabric
+        euphoria-patches
+        fabric-api
+        falling-leaves-forge
+        fancymenu
+        fast-ip-ping
+        immediatelyfast
+        just-zoom-forge
+        luna
+        mouse-tweaks
+        neruina
+        overflowing-bars
+        oculus
+        pick-up-notifier
+        radium-reforged
+        ryoamiclights
+        server-browser
+        simple-discord-rich-presence
+        xaeroplus
+        yungs-menu-tweaks
+        not-enough-animations
+        client-crafting
+        lazurite
+        badoptimizations
+      CF_FORCE_INCLUDE_MODS: |
+        dimensional-sync-fixes
+        crabbers-delight
+        neruina
+      CF_OVERRIDES_EXCLUSIONS: |
+        mods/inventorymanagement*.jar
+        mods/memoryleakfix*.jar
+        resourcepacks/*
+      # *.json5
+      CF_OVERRIDES_SKIP_EXISTING: true
+      DEBUG: true
+      GUI: FALSE
+      MOTD: <3 Chanaud Server Ɛ>
+      EULA: true
+      JVM_XX_OPTS: "-XX:MaxRAMPercentage=75"
+      MEMORY: ""
+      ENABLE_WHITELIST: true
+      TZ: /etc/localtime:/etc/localtime:ro
+      ENABLE_ROLLING_LOGS: true
+      LOG_TIMESTAMP: true
+      RCON_PASSWORD: REDACTED
+      SERVER_PORT: 25567
+    deploy:
+      resources:
+        limits:
+          memory: 14G
+          cpu: 4
+    ports:
+      - "25567:25567"
+    volumes:
+      - ./data:/data
+      - ./downloads:/downloads
+    stdin_open: true
+    tty: true
+    restart: no
+volumes:
+  data: {}
+
+ #docker run -d -e TYPE=MODRINTH -e MODRINTH_LOADER=forge -e MOTD='Minecraft Server' -e MODE=survival -e MEMORY=6G -e VERSION=LATEST -e EULA=true -e MODRINTH_MODPACK=better-mc-forge-bmc4 -e MODRINTH_FORCE_SYNCHRONIZE=true -e MODRINTH_EXCLUDE_FILES='citresewn,oculus,yungsmenutweaks,neko,notenoughanimations,ryoamiclights,euphoriapatcher,entity_model_features,entity_texture_features,3dskinlayers' -p '25565:25565' itzg/minecraft-server:latest

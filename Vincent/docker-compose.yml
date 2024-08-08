@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mc:
+    image: itzg/minecraft-server:java21
+    environment:
+      EULA: 'true'
+      SERVER_PORT: 25566
+      MEMORY: ''
+      JVM_XX_OPTS: "-XX:MaxRAMPercentage=75"
+      ENABLE_WHITELIST: 'true'
+      TZ: '/etc/localtime:/etc/localtime:ro'
+      ENABLE_ROLLING_LOGS: 'true'
+      LOG_TIMESTAMP: 'true'
+      RCON_PASSWORD: 'REDACTED'
+      JAVA_VERSION: 'jdk-17.0.10+7'
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    ports:
+      - "25566:25566"
+    volumes:
+      - ./data:/data
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+volumes:
+  data: {}
